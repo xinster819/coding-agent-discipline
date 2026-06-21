@@ -1,0 +1,9 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# 构建产物（.skill / .zip 由 skills/ 生成，可在 Release 里发布，不入库）
+dist/
+
+# setup.sh 的备份文件
+*.bak.*
