@@ -90,3 +90,5 @@
 > 规则与 skill 是强引导而非硬约束（靠运行时召回生效）；但本文件顶部「安全底线」是底线，不依赖 skill 触发。要硬拦截（如计划外文件被改）需配 hook。
 
 **项目跨 session 接力（command 层，非 skill）**：长项目接手/续命/收工时走 handoff 三件套——`/handoff-init`（首次扫仓库生成 HANDOFF.md+tasks.md）、`/handoff-resume`（每次开工读档 plan）、`/handoff-save`（每次收工回写）。Claude Code 用 slash command，其他工具用 `docs/handoff-prompts.md` 可粘贴版。
+
+**代码库导航（导航类 skill，非纪律）**：大仓库/多仓库里建或刷本地知识库，让 agent 稳定找到入口/规则/符号——建库走 `project-kb-production`，刷新走 `project-kb-refresh`；二者按各自 description 自动触发，与 handoff（跨时间）互补管"跨空间不迷路"。

@@ -25,12 +25,12 @@
 ## 架构：两层，不堆料
 
 - **RULE（编码协作宪法 = `AGENTS.md`）**：永久人格 + 六大纪律的**基线**，始终加载，刻意精简（每条都得改变行为，否则删）。
-- **SKILL（5 个领域流程）**：靠 `description` 关键词**按需触发**，省上下文，放需要展开的深流程。
+- **SKILL（7 个领域流程，分两类）**：靠 `description` 关键词**按需触发**，省上下文，放需要展开的深流程。其中 **5 个纪律流程**（约束 agent 怎么思考/干活）+ **2 个代码库导航流程**（project-kb-production / refresh，帮 agent 在大仓库里不迷路）。
 - **COMMAND（3 个 handoff slash command）**：手动 `/handoff-*` 显式调用的薄命令层，专管项目跨 session 接力（详见下方速查）。
 
 > 反直觉点：规则不是越多越好。把所有边界塞进一份长 prompt 会导致 context rot（token 越多召回越差）。所以**宪法瘦，深流程下沉成 skill**。前沿模型可靠遵循的指令约 150–200 条，本宪法远低于此。
 
-## 5 个 Skill 速查
+## 纪律 Skill 速查（5 个）
 
 | Skill | 触发时机 | 核心产出 |
 |---|---|---|
@@ -39,6 +39,17 @@
 | **challenge-me** | 你表达技术/高代价意向("这样行吧"/"我打算…")/施压/高危操作 | 独立判断先行 + 中性问题改写 + 拒绝被压翻供 + 硬魔鬼代言人 + 高危加护栏（延后冷静+动机审计） |
 | **blindspot-scan** | 合并/上线/定稿前、"挑刺/盲点" | 六维证伪式扫描（正确性·假设·失败模式·安全·性能·可维护） |
 | **retro** | 复盘/周报/阶段回顾/事故 postmortem | 状态快照→行动项回溯→风险→决策回溯(反谄媚)→下阶段行动 |
+
+## 代码库导航 Skill 速查（2 个）
+
+帮 agent 在大仓库 / 多仓库里稳定找到 repo 入口、规则、测试命令、关键符号——和 handoff（跨时间接力）互补，管"跨空间不迷路"。
+
+| Skill | 触发时机 | 核心产出 |
+|---|---|---|
+| **project-kb-production** | 建知识库 / 搭 KB / agent 老在仓库里迷路 | 显式覆盖边界 + 文档/代码分索引 + 稳定 search/doctor 入口 + 短重建链 + 硬验证 |
+| **project-kb-refresh** | "最近代码有更新，KB 跟上没" / 搜出来还是旧的 | 定位变更范围 → 映射覆盖 → 重建 → doctor → 实查变更内容 → 归档影响摘要 |
+
+> 同源基因：两者的硬规则「Verification Before Claims / Real Queries Are Mandatory」与 verify-before-claiming 的完成铁律一脉相承——KB 没真查到就不算"更新完成"。
 
 ## 3 个 Slash Command 速查（项目跨 session 接力）
 
@@ -72,7 +83,7 @@ Claude Code 原生 slash command；其他工具用 `docs/handoff-prompts.md` 的
 ```bash
 git clone <本仓库地址> coding-agent-discipline
 cd coding-agent-discipline
-bash setup.sh        # 全局装：宪法 + 5 skill + 3 slash command，单一真源在 ~/.ai-coding-pack
+bash setup.sh        # 全局装：宪法 + 7 skill + 3 slash command，单一真源在 ~/.ai-coding-pack
 ```
 
 `setup.sh` 会把本包复制到 `~/.ai-coding-pack`（**单一真源**），再从各工具全局目录符号链接过去——以后改规则只改这一处，所有工具同步生效。装完即生效，无需重启会话。

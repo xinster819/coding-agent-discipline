@@ -73,7 +73,7 @@
 
 ## 配套：项目根 CLAUDE.md 模板（每次自动加载，让宪法+skill+handoff 随项目生效）
 
-> 放项目根目录。已引用本能力包的 5 个 skill 命名。若你已用 `install-into-project.sh`
+> 放项目根目录。已引用本能力包的 5 个纪律 skill 命名（代码库导航的 project-kb-* 靠自身 description 触发，无需写进路由）。若你已用 `install-into-project.sh`
 > 装了 `.claude/constitution.md`，宪法部分可只留一行 `@.claude/constitution.md` 导入，下面的精简版用于无该文件时。
 
 ```markdown
