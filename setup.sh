@@ -23,13 +23,16 @@ echo "==> 1. 建立单一真源 $DEST"
 mkdir -p "$DEST"
 cp "$SRC_DIR/AGENTS.md" "$DEST/AGENTS.md"
 rm -rf "$DEST/skills" && cp -R "$SRC_DIR/skills" "$DEST/skills"
-echo "  已复制 AGENTS.md 和 skills/ 到 $DEST"
+rm -rf "$DEST/commands" && cp -R "$SRC_DIR/commands" "$DEST/commands"
+rm -rf "$DEST/docs" && cp -R "$SRC_DIR/docs" "$DEST/docs"
+echo "  已复制 AGENTS.md、skills/、commands/、docs/ 到 $DEST"
 
 echo "==> 2. Claude Code（~/.claude）"
-mkdir -p "$HOME/.claude/skills"
+mkdir -p "$HOME/.claude/skills" "$HOME/.claude/commands"
 backup "$HOME/.claude/CLAUDE.md"
 link "$DEST/AGENTS.md" "$HOME/.claude/CLAUDE.md"          # Claude Code 读 CLAUDE.md
 for d in "$DEST"/skills/*/; do link "$d" "$HOME/.claude/skills/$(basename "$d")"; done
+for f in "$DEST"/commands/*.md; do link "$f" "$HOME/.claude/commands/$(basename "$f")"; done
 
 echo "==> 3. Codex（~/.codex + ~/.agents/skills）"
 mkdir -p "$HOME/.codex" "$HOME/.agents/skills"
@@ -49,11 +52,19 @@ fi
 
 cat <<EOF
 
-==> 完成。已全局安装到 Claude Code / Codex（+ CoCo 复用 ~/.claude/skills）。
+==> 完成。已全局安装到 Claude Code（宪法 + skills + slash commands）/ Codex（宪法 + skills）；CoCo 复用 ~/.claude/skills。
+
+【handoff 三件套（Claude Code slash command）】
+  已链接到 ~/.claude/commands：新开 claude 输入 / 即可见
+    /handoff-init（项目首次接入）→ /handoff-resume（每次开工）→ /handoff-save（每次收工）
 
 【CoCo 的规则文件（AGENTS.md）是「工作区根目录」级别，没有全局 home 路径】
   想让宪法在某个项目对 CoCo 生效，在该项目根执行：
     ln -sfn "$DEST/AGENTS.md" ./AGENTS.md
+
+【Codex / Trae 的 handoff（无 Claude Code slash 机制）】
+  用可粘贴兜底版：$DEST/docs/handoff-prompts.md（含 Prompt A/B/C + 项目 CLAUDE.md 模板）。
+  若你的 Codex 版本支持自定义 prompt 目录，可自行把 commands/*.md 链接过去【按你的版本核实路径】。
 
 【Trae 需手动（不支持 SKILL.md / AGENTS.md）】
   1) 打开 Trae 设置 → Rules → user_rules（全局）
@@ -61,5 +72,6 @@ cat <<EOF
   3) skills 无法直接复用：把你最看重的 skill（如 verify-before-claiming、challenge-me）
      的步骤摘进 user_rules 或项目 .trae/rules/project_rules.md
 
-验证：在任一工具里挑个真实任务跑一遍，看宪法是否生效、skill 是否在该触发时触发。
+验证：在任一工具里挑个真实任务跑一遍，看宪法是否生效、skill 是否在该触发时触发；
+      Claude Code 里输入 / 看 handoff 命令是否出现。
 EOF

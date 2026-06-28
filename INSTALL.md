@@ -26,8 +26,13 @@ bash setup.sh
   mkdir -p ~/.claude/skills
   for d in ~/.ai-coding-pack/skills/*/; do ln -sfn "$d" ~/.claude/skills/$(basename "$d"); done
   ```
-- 触发：靠 `SKILL.md` 的 `description` 自动匹配，也可 `/skill-name` 显式调用。
-- 官方文档：记忆 https://code.claude.com/docs/en/memory ｜Skills https://code.claude.com/docs/en/skills
+- **Slash Commands（全局）**：把 handoff 三件套链接进 `~/.claude/commands/`：
+  ```bash
+  mkdir -p ~/.claude/commands
+  for f in ~/.ai-coding-pack/commands/*.md; do ln -sfn "$f" ~/.claude/commands/$(basename "$f"); done
+  ```
+- 触发：skill 靠 `SKILL.md` 的 `description` 自动匹配，也可 `/skill-name` 显式调用；command 用 `/handoff-init`、`/handoff-resume`、`/handoff-save`。
+- 官方文档：记忆 https://code.claude.com/docs/en/memory ｜Skills https://code.claude.com/docs/en/skills ｜Slash commands https://code.claude.com/docs/en/slash-commands
 
 ### 2. Codex
 - **规则（全局）**：`ln -sfn ~/.ai-coding-pack/AGENTS.md ~/.codex/AGENTS.md`
@@ -36,6 +41,7 @@ bash setup.sh
   mkdir -p ~/.agents/skills
   for d in ~/.ai-coding-pack/skills/*/; do ln -sfn "$d" ~/.agents/skills/$(basename "$d"); done
   ```
+- **Handoff（无 Claude Code slash 机制）**：用 `~/.ai-coding-pack/docs/handoff-prompts.md` 的可粘贴版（Prompt A/B/C）。若你的 Codex 版本支持自定义 prompt 目录，可把 `commands/*.md` 链接过去（**路径按你的版本核实**，本包不臆造）。
 - 官方文档：AGENTS.md https://developers.openai.com/codex/guides/agents-md ｜Skills https://developers.openai.com/codex/skills
 
 ### 3. Snowflake CoCo（Cortex Code）
@@ -49,7 +55,22 @@ bash setup.sh
 - **规则（全局）**：Trae 设置 → Rules → `user_rules`，把 `AGENTS.md` 内容整段粘进去。
 - **项目规则**：`.trae/rules/project_rules.md`（项目规则会覆盖个人规则）。
 - **Skills**：Trae 没有 SKILL.md 机制。把你最看重的 skill（建议 `verify-before-claiming`、`challenge-me`、`self-help-first`）的步骤摘进 `user_rules` 或 `project_rules.md`。或用 Trae 的 MCP 暴露成工具。
+- **Handoff**：没有 slash command，直接用 `docs/handoff-prompts.md` 的可粘贴 Prompt A/B/C。
 - 官方文档：https://docs.trae.ai/ide/rules
+
+---
+
+## handoff 三件套（项目跨 session 接力）
+
+只有 Claude Code 有原生 slash command；其他工具用 `docs/handoff-prompts.md` 的可粘贴版。节奏是一个循环：
+
+| 时机 | Claude Code | 兜底（Codex/Trae/CoCo） | 产出 |
+|---|---|---|---|
+| 项目首次接入 | `/handoff-init` | docs Prompt A | HANDOFF.md + tasks.md |
+| 每次开工 | `/handoff-resume` | docs Prompt B | 读档对齐、plan 后开工 |
+| 每次收工 / 上下文将满 | `/handoff-save` | docs Prompt C | 回写两份文件 |
+
+> 想让某项目默认带上宪法+skill+handoff，跑 `bash install-into-project.sh /path/to/project`，把 `.claude/` 与 `CLAUDE.md` 一起 commit，团队共享。
 
 ---
 
@@ -57,6 +78,7 @@ bash setup.sh
 挑一个真实任务跑一遍，检查：
 1. **宪法生效**：让它做个会"想偷懒报完成"的小改动，看它是否坚持先跑验证、给证据。
 2. **skill 触发**：说"这样改对吧"看是否触发 challenge-me 式反驳；说"复盘下"看是否走 retro。
-3. 不准就回到 `~/.ai-coding-pack/` 调 `description` 触发词或宪法措辞——这就是自进化回路。
+3. **command 可见**（仅 Claude Code）：输入 `/` 应看到 `/handoff-init`、`/handoff-resume`、`/handoff-save`。
+4. 不准就回到 `~/.ai-coding-pack/` 调 `description` 触发词或宪法措辞——这就是自进化回路。
 
 > 注意：规则/skill 是**强引导而非硬约束**（靠运行时召回生效，可被绕过）。要"计划外文件被改就拦截"这类硬约束，需配各工具的 hook（Claude PreToolUse hook / CoCo hooks.json / Codex hooks）。

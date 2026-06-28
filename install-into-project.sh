@@ -20,6 +20,11 @@ mkdir -p "$PROJ/.claude/skills"
 cp -R "$SRC_DIR"/skills/* "$PROJ/.claude/skills/"
 for d in "$PROJ"/.claude/skills/*/; do echo "    + $(basename "$d")"; done
 
+echo "==> 安装 handoff slash commands 到 $PROJ/.claude/commands"
+mkdir -p "$PROJ/.claude/commands"
+cp "$SRC_DIR"/commands/*.md "$PROJ/.claude/commands/"
+for f in "$PROJ"/.claude/commands/*.md; do echo "    + /$(basename "$f" .md)"; done
+
 echo "==> 安装宪法到 $PROJ/.claude/constitution.md"
 cp "$SRC_DIR/AGENTS.md" "$PROJ/.claude/constitution.md"
 
@@ -41,8 +46,10 @@ cat <<EOF
 
 ==> 完成。验证：
   cd "$PROJ" && claude
-  然后输入：/        # 应能看到 /verify-before-claiming、/challenge-me 等
+  然后输入：/        # 应能看到 /verify-before-claiming、/challenge-me、/handoff-init 等
   或问：    我有哪些 skill 可用？
   或诊断：  /doctor  # 看 skill 描述是否因上下文预算被截断
+
+handoff 三件套：首次 /handoff-init 生成 HANDOFF.md+tasks.md；每次开工 /handoff-resume；收工 /handoff-save。
 建议把 .claude/ 与 CLAUDE.md 一起 commit，团队共享。
 EOF

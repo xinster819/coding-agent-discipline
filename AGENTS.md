@@ -88,3 +88,5 @@
 
 > 分工：**verify-before-claiming** 管"单条声明"是否有证据；**blindspot-scan** 管"整套方案/改动"的系统性风险；**retro** 管事后回顾。层级不同，可分别触发。
 > 规则与 skill 是强引导而非硬约束（靠运行时召回生效）；但本文件顶部「安全底线」是底线，不依赖 skill 触发。要硬拦截（如计划外文件被改）需配 hook。
+
+**项目跨 session 接力（command 层，非 skill）**：长项目接手/续命/收工时走 handoff 三件套——`/handoff-init`（首次扫仓库生成 HANDOFF.md+tasks.md）、`/handoff-resume`（每次开工读档 plan）、`/handoff-save`（每次收工回写）。Claude Code 用 slash command，其他工具用 `docs/handoff-prompts.md` 可粘贴版。
