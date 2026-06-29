@@ -2,7 +2,7 @@
 
 > 用途：让一个跑到一半的项目，在任意新 session 里被无损接手。
 > 在 Claude Code 里直接用 `/handoff-init`、`/handoff-resume`、`/handoff-save`（见 `commands/`）即可；
-> **本文件是给没有 slash command 机制的工具（Trae / CoCo / Codex 等）的可粘贴兜底版**——直接复制对应代码块粘进去。
+> **本文件是给 Claude Code 之外的工具（Codex / Trae / CoCo 等）、或想用纯文本驱动 handoff 时的可粘贴兜底版**——直接复制对应代码块粘进去。
 > 三个 prompt 配合两份文件（HANDOFF.md / tasks.md）使用。
 
 ---

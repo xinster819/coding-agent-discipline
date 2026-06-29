@@ -1,6 +1,6 @@
 # 安装指南（全局，所有项目生效）
 
-四个工具里有三个（Claude Code / Codex / Snowflake CoCo）共享同一套开放标准——`SKILL.md` 目录靠 `description` 自动触发，规则走 `AGENTS.md`/`CLAUDE.md`。所以**一份规则 + 一套 skill 能同时驱动这三个**。Trae 是例外，需手动同步。
+四个工具都吃同一套开放标准——`SKILL.md` 目录靠 `description` 自动触发，规则走 `AGENTS.md`/`CLAUDE.md` 或各自的 rules 面板。Claude Code / Codex / CoCo 用全局 skill 目录；**Trae 也原生支持 Skills**（自动加载 `~/.agents/skills`，与 Codex 同目录），规则粘进 Rules & Memories。所以**一份规则 + 一套 skill 能驱动全部四个**，只是 Trae 的规则需粘一次。
 
 ## 最快路径：一键脚本
 
@@ -51,12 +51,14 @@ bash setup.sh
   ⚠️ 该符号链接指向本机绝对路径，会被 git 跟踪。**把它加进 `.gitignore`**，或干脆复制一份项目自己的 `AGENTS.md`，免得 commit 进仓库后在同事机器上变成断链。
 - 官方文档：扩展性 https://docs.snowflake.com/en/user-guide/cortex-code/extensibility
 
-### 4. Trae（需手动，不支持 SKILL.md / AGENTS.md）
-- **规则（全局）**：Trae 设置 → Rules → `user_rules`，把 `AGENTS.md` 内容整段粘进去。
+### 4. Trae（原生支持 Skills；规则走 Rules & Memories）
+> 实测：当前 Trae 有 **Skills & Commands** 面板，并能自动加载 `~/.agents/skills`（与 Codex 同目录）。依据：用户的 Trae 设置截图 + 本机 `ls ~/.agents/skills` 确认 7 个软链接（检索于 2026-06-29）。
+- **Skills（已自动覆盖）**：`setup.sh` 已把 7 个 skill 链接进 `~/.agents/skills`。在 Trae 设置 → **Skills & Commands**，打开「Enable .agents Skills Directory」开关，点 ↻ 刷新，即见 `verify-before-claiming` / `self-help-first` / `challenge-me` / `blindspot-scan` / `retro` / `project-kb-production` / `project-kb-refresh`，按需开关。靠 `description` 关键词自动触发。
+- **规则（宪法）**：Trae 设置 → **Rules & Memories**，把 `docs/trae-user-rules.md` 分隔线之间的整段粘进 `user_rules`（= 宪法 + 改动前清单/非程序员模式两条增补）。或直接粘 `AGENTS.md`。
+- **⚠️ 装前先删旧规则**：若 Trae 里已有别的 global rule（如自写的"防胡说八道协议"或 Superpowers 段），先删掉再粘，别两份重复协议并存（context rot）。
 - **项目规则**：`.trae/rules/project_rules.md`（项目规则会覆盖个人规则）。
-- **Skills**：Trae 没有 SKILL.md 机制。把你最看重的 skill（建议 `verify-before-claiming`、`challenge-me`、`self-help-first`）的步骤摘进 `user_rules` 或 `project_rules.md`。或用 Trae 的 MCP 暴露成工具。
-- **Handoff**：没有 slash command，直接用 `docs/handoff-prompts.md` 的可粘贴 Prompt A/B/C。
-- 官方文档：https://docs.trae.ai/ide/rules
+- **Handoff**：用 `docs/handoff-prompts.md` 的可粘贴 Prompt A/B/C。（Trae 有 Commands 面板，能否自动导入本包 `commands/` **尚未核实**，待确认；在此之前用可粘贴版最稳。）
+- 官方文档：Rules https://docs.trae.ai/ide/rules
 
 ---
 
@@ -81,6 +83,18 @@ bash setup.sh
 - **直接 `/skill-name`**（Claude Code 装好的 skill 自动有 `/` 入口）：`/project-kb-production`、`/project-kb-refresh`，支持传参（如 `/project-kb-refresh 合并了 auth 模块` → `$ARGUMENTS`）。
 - **短别名**（commands/ 里的薄包装，等效、更好敲）：`/kb-init`、`/kb-refresh`。
 - **自动触发**：不敲命令时，靠 skill 的 `description` 关键词自动唤起（Codex/CoCo 无 `/` 自动入口，主要靠这条）。
+
+---
+
+## 可选：机制兜底 hook（强约束，不靠自觉）
+
+规则/skill 是强引导、可被绕过；要真正拦住"无证据就报完成/凭印象断言外部能力"，配 `hooks/verify-guard.py`。它作为 **Claude Code Stop hook**，在回复结束前扫描，命中无证据断言就打回要证据（已实测 5 个用例）。
+
+在 `~/.claude/settings.json` 加：
+```json
+{ "hooks": { "Stop": [ { "hooks": [ { "type": "command", "command": "python3 ~/.ai-coding-pack/hooks/verify-guard.py" } ] } ] } }
+```
+> 它是 tripwire 不是 100% 保证（覆盖已约定的禁用词契约）；fail-open，不会因 hook 故障卡住你。Trae/Codex 的 hook 事件名待核实，见 `hooks/README.md`，不臆造。
 
 ---
 

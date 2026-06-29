@@ -2,7 +2,7 @@
 # ------------------------------------------------------------------
 # 全局安装脚本：把这套编码协作能力（AGENTS.md + skills）安装到
 # Claude Code / Codex / Snowflake CoCo，对所有项目全局生效。
-# Trae 不支持 SKILL.md / AGENTS.md，脚本末尾给手动步骤。
+# Trae 原生支持 Skills（自动加载 ~/.agents/skills，与 Codex 同目录，本脚本已覆盖）；规则走 user_rules。
 #
 # 原理：把本包复制到稳定的「单一真源」目录 ~/.ai-coding-pack，
 # 再从各工具的全局目录用「符号链接」指过去。改一处，处处更新。
@@ -25,7 +25,8 @@ cp "$SRC_DIR/AGENTS.md" "$DEST/AGENTS.md"
 rm -rf "$DEST/skills" && cp -R "$SRC_DIR/skills" "$DEST/skills"
 rm -rf "$DEST/commands" && cp -R "$SRC_DIR/commands" "$DEST/commands"
 rm -rf "$DEST/docs" && cp -R "$SRC_DIR/docs" "$DEST/docs"
-echo "  已复制 AGENTS.md、skills/、commands/、docs/ 到 $DEST"
+rm -rf "$DEST/hooks" && cp -R "$SRC_DIR/hooks" "$DEST/hooks"
+echo "  已复制 AGENTS.md、skills/、commands/、docs/、hooks/ 到 $DEST"
 
 echo "==> 2. Claude Code（~/.claude）"
 mkdir -p "$HOME/.claude/skills" "$HOME/.claude/commands"
@@ -63,16 +64,21 @@ cat <<EOF
   想让宪法在某个项目对 CoCo 生效，在该项目根执行：
     ln -sfn "$DEST/AGENTS.md" ./AGENTS.md
 
-【Codex / Trae 的 handoff（无 Claude Code slash 机制）】
-  用可粘贴兜底版：$DEST/docs/handoff-prompts.md（含 Prompt A/B/C + 项目 CLAUDE.md 模板）。
-  若你的 Codex 版本支持自定义 prompt 目录，可自行把 commands/*.md 链接过去【按你的版本核实路径】。
+【Trae（原生支持 Skills，自动加载 ~/.agents/skills）】
+  1) Skills：本脚本已把 skills 链接进 ~/.agents/skills——Trae 设置 → Skills & Commands，
+     打开「Enable .agents Skills Directory」开关，点 ↻ 刷新，即可见 7 个 skill（按需开关）。
+  2) 规则（宪法）：Trae 设置 → Rules & Memories，把 $DEST/docs/trae-user-rules.md 分隔线之间
+     的整段粘进 user_rules（或直接用 $DEST/AGENTS.md）。
+  3) handoff：用 $DEST/docs/handoff-prompts.md 的可粘贴 Prompt A/B/C。
 
-【Trae 需手动（不支持 SKILL.md / AGENTS.md）】
-  1) 打开 Trae 设置 → Rules → user_rules（全局）
-  2) 把 $DEST/AGENTS.md 的内容整段粘进去
-  3) skills 无法直接复用：把你最看重的 skill（如 verify-before-claiming、challenge-me）
-     的步骤摘进 user_rules 或项目 .trae/rules/project_rules.md
+【Codex 的 handoff（无 Claude Code slash 机制）】
+  用可粘贴兜底版：$DEST/docs/handoff-prompts.md（含 Prompt A/B/C + 项目 CLAUDE.md 模板）。
+
+【可选·机制兜底 hook（强约束，拦无证据断言）】
+  本脚本已把脚本放到 $DEST/hooks/verify-guard.py。要启用，在 ~/.claude/settings.json 的
+  hooks.Stop 里加：python3 $DEST/hooks/verify-guard.py（完整片段见 $DEST/hooks/README.md）。
+  这是唯一不靠模型自觉的一层；Trae/Codex 的 hook 配置见 README（未核实前不臆造）。
 
 验证：在任一工具里挑个真实任务跑一遍，看宪法是否生效、skill 是否在该触发时触发；
-      Claude Code 里输入 / 看 handoff 命令是否出现。
+      Claude Code 里输入 / 看 handoff 命令是否出现；Trae 在 Skills 面板看 7 个 skill 是否列出。
 EOF
