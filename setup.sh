@@ -54,9 +54,10 @@ cat <<EOF
 
 ==> 完成。已全局安装到 Claude Code（宪法 + skills + slash commands）/ Codex（宪法 + skills）；CoCo 复用 ~/.claude/skills。
 
-【handoff 三件套（Claude Code slash command）】
-  已链接到 ~/.claude/commands：新开 claude 输入 / 即可见
-    /handoff-init（项目首次接入）→ /handoff-resume（每次开工）→ /handoff-save（每次收工）
+【Slash command（已链接到 ~/.claude/commands，新开 claude 输入 / 即可见）】
+  handoff 三件套：/handoff-init（项目首次接入）→ /handoff-resume（每次开工）→ /handoff-save（每次收工）
+  KB 别名：/kb-init（建/重建知识库）、/kb-refresh（刷新知识库）
+  另：装好的 skill 本身也能直接 / 调用，如 /project-kb-production、/challenge-me。
 
 【CoCo 的规则文件（AGENTS.md）是「工作区根目录」级别，没有全局 home 路径】
   想让宪法在某个项目对 CoCo 生效，在该项目根执行：

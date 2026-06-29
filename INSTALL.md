@@ -74,11 +74,21 @@ bash setup.sh
 
 ---
 
+## 代码库导航 KB（怎么调用）
+
+`project-kb-production` / `project-kb-refresh` 是 skill，**两种方式都能用**：
+
+- **直接 `/skill-name`**（Claude Code 装好的 skill 自动有 `/` 入口）：`/project-kb-production`、`/project-kb-refresh`，支持传参（如 `/project-kb-refresh 合并了 auth 模块` → `$ARGUMENTS`）。
+- **短别名**（commands/ 里的薄包装，等效、更好敲）：`/kb-init`、`/kb-refresh`。
+- **自动触发**：不敲命令时，靠 skill 的 `description` 关键词自动唤起（Codex/CoCo 无 `/` 自动入口，主要靠这条）。
+
+---
+
 ## 验证安装是否生效
 挑一个真实任务跑一遍，检查：
 1. **宪法生效**：让它做个会"想偷懒报完成"的小改动，看它是否坚持先跑验证、给证据。
 2. **skill 触发**：说"这样改对吧"看是否触发 challenge-me 式反驳；说"复盘下"看是否走 retro。
-3. **command 可见**（仅 Claude Code）：输入 `/` 应看到 `/handoff-init`、`/handoff-resume`、`/handoff-save`。
+3. **command 可见**（仅 Claude Code）：输入 `/` 应看到 `/handoff-init`、`/handoff-resume`、`/handoff-save`、`/kb-init`、`/kb-refresh`，以及 skill 自带入口如 `/project-kb-production`。
 4. 不准就回到 `~/.ai-coding-pack/` 调 `description` 触发词或宪法措辞——这就是自进化回路。
 
 > 注意：规则/skill 是**强引导而非硬约束**（靠运行时召回生效，可被绕过）。要"计划外文件被改就拦截"这类硬约束，需配各工具的 hook（Claude PreToolUse hook / CoCo hooks.json / Codex hooks）。

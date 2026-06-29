@@ -26,7 +26,7 @@
 
 - **RULE（编码协作宪法 = `AGENTS.md`）**：永久人格 + 六大纪律的**基线**，始终加载，刻意精简（每条都得改变行为，否则删）。
 - **SKILL（7 个领域流程，分两类）**：靠 `description` 关键词**按需触发**，省上下文，放需要展开的深流程。其中 **5 个纪律流程**（约束 agent 怎么思考/干活）+ **2 个代码库导航流程**（project-kb-production / refresh，帮 agent 在大仓库里不迷路）。
-- **COMMAND（3 个 handoff slash command）**：手动 `/handoff-*` 显式调用的薄命令层，专管项目跨 session 接力（详见下方速查）。
+- **COMMAND（5 个 slash command）**：手动 `/` 显式调用的薄命令层——3 个 handoff（项目跨 session 接力）+ 2 个 KB 别名（`/kb-init`、`/kb-refresh`，详见下方速查）。
 
 > 反直觉点：规则不是越多越好。把所有边界塞进一份长 prompt 会导致 context rot（token 越多召回越差）。所以**宪法瘦，深流程下沉成 skill**。前沿模型可靠遵循的指令约 150–200 条，本宪法远低于此。
 
@@ -50,6 +50,8 @@
 | **project-kb-refresh** | "最近代码有更新，KB 跟上没" / 搜出来还是旧的 | 定位变更范围 → 映射覆盖 → 重建 → doctor → 实查变更内容 → 归档影响摘要 |
 
 > 同源基因：两者的硬规则「Verification Before Claims / Real Queries Are Mandatory」与 verify-before-claiming 的完成铁律一脉相承——KB 没真查到就不算"更新完成"。
+>
+> **怎么调用**：Claude Code 里装好的 skill 自动获得 `/` 入口,可直接敲 `/project-kb-production`、`/project-kb-refresh`(支持传参,如 `/project-kb-refresh 合并了 auth 模块`)。嫌名字长另提供短别名 **`/kb-init`**、**`/kb-refresh`**(commands/ 里的薄包装,等效)。Codex 无 `/` 自动入口,靠 skill description 自动触发。
 
 ## 3 个 Slash Command 速查（项目跨 session 接力）
 
