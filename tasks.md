@@ -23,6 +23,9 @@
 - [ ] **核实 Trae/Codex 的 hook 配置格式**，让 verify-guard 能在这两个工具挂上
   - 完成判据：hooks/README.md 补上确证的配置片段
 - [ ] （可选）把 verify-guard 从纯 tripwire 增强为"带精确数字的定性结论无置信度标记则软提醒"，评估误报率
+- [ ] **修 verify-guard 引用语境误报**（evals/cases/08，已在 hook_eval 里红着）
+  - 完成判据：hook_eval 全绿，且拦截率 4/4 不掉
+- [x] 搭最小 eval（evals/：hook_eval.py 自动化 + 8 张真实失败案例卡 + 判分口径）——基线：拦截率 100%，误报率 14%
 
 ## 用户侧动作（非代码，提醒下个 session 转告）
 - [ ] 用户重跑 `bash setup.sh` 让最新规则/skill 传到 ~/.ai-coding-pack（全局 + Trae）

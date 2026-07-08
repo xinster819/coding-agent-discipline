@@ -28,6 +28,7 @@
 - **SKILL（8 个领域流程）**：靠 `description` 关键词**按需触发**，省上下文，放需要展开的深流程。**5 个纪律流程**（约束 agent 怎么思考/干活）+ **2 个代码库导航流程**（project-kb-production / refresh）+ **1 个调查流程**（hypothesis-ledger，长周期多 session 假设账本深挖）。
 - **COMMAND（5 个 slash command）**：手动 `/` 显式调用的薄命令层——3 个 handoff（项目跨 session 接力）+ 2 个 KB 别名（`/kb-init`、`/kb-refresh`，详见下方速查）。
 - **HOOK（机制兜底，可选但强烈建议）**：`hooks/verify-guard.py`——RULE/SKILL 是强引导可被绕过，hook 是**唯一不靠模型自觉**的一层。作为 Claude Code Stop hook，拦截"无证据的成功/能力断言"（如"修好了""X 不支持 Y"）并打回要证据。安装见 `hooks/README.md`。
+- **EVAL（改规则前后跑，防凭轶事迭代）**：`evals/`——hook 自动评测（拦截率/误报率）+ 真实失败案例卡。改任何规则/hook 后跑 `python3 evals/hook_eval.py`，用数据判断这版是正向还是负向，见 `evals/README.md`。
 
 > 反直觉点：规则不是越多越好。把所有边界塞进一份长 prompt 会导致 context rot（token 越多召回越差）。所以**宪法瘦，深流程下沉成 skill**。前沿模型可靠遵循的指令约 150–200 条，本宪法远低于此。
 
