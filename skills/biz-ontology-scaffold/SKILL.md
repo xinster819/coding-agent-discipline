@@ -35,6 +35,9 @@ bash scripts/init.sh <目标目录> <业务域名>
 6. **更新可 review**——refresh 每次追加人话 CHANGELOG（repo 新 commit 摘要/索引增减/doctor 结果/⚠️项）；doctor 失败退出码非 0 可接告警。
 7. **macOS bash 3.2 兼容**——sync.sh 不用 mapfile（实测踩过）。
 
+## 角色分工
+本 skill（框架侧）只管：引擎、模板、SOP。**实例化、填源、部署、cron 等业务对接执行，由业务侧执行者按 [references/EXECUTION-SOP.md](references/EXECUTION-SOP.md) 完成**——那是给执行 agent 照跑的标准作业程序（P0 实例化 → P1 填边界 → P2 首刷验收 → P3 契约打样 → P4 定时确认，每步带先红后绿判据）。执行中发现框架问题回报本仓库，不在实例里魔改 tools/。
+
 ## 实例化后的推进（P1）
 1. `source_registry.json` 登记 repos（name+git）；文档进 `docs/`；台账填 `resources/*.json`
 2. 用户给最高频 3 个业务问题 → 填 `kb/ontology/answer_contracts.json`

@@ -1,0 +1,55 @@
+# 业务 Ontology 工作区 · 执行 SOP
+
+> **角色分工（先读）**：本框架（biz-ontology-scaffold）只提供引擎、模板与本 SOP。
+> **执行者 = 业务侧的人或 agent**：实例化、填源、clone、验收、装 cron 全由执行者按本 SOP 完成。
+> 执行中发现引擎 bug / 框架缺口 → 回报框架仓库（coding-agent-discipline），**禁止在实例里魔改 `tools/`**（下次框架升级会被覆盖）。
+
+## 前置输入（业务方准备，缺什么标什么）
+- [ ] 业务域名（用于目录与命名，如 `content-workflow`）
+- [ ] repo 清单：名称 + git 地址（若有"服务全景/台账"类文档，从中提取，缺地址的列 TODO 向业务方要）
+- [ ] 核心文档（放 `docs/`）
+- [ ] 存储/资源清单：DB、MQ、HDFS/对象存储等——名称、用途一句话、查询/取数命令
+- [ ] 最高频的 3 个业务问题（做 answer_contracts 打样）
+
+## P0 实例化（≤5 分钟）
+```bash
+bash <框架路径>/scripts/init.sh <工作区目录> <业务域名>
+```
+- 目标目录**必须不存在**（init 不覆盖）。若业务方已有聚合目录（常见：里面已有文档或空 repos/）：
+  先把已有内容移到临时位置 → `rmdir` 清空目录（rmdir 只删空目录，天然安全）→ init → 把文档移回 `docs/`。
+- **验收（红态基线）**：init 输出里 doctor 应有且仅有 `repos_cloned ❌`（其余 ✅）；`kb.py search <业务词>` 0 命中。
+  ⚠️ 此时"红"是**正确状态**——它证明后续验收有区分度（先红后绿）。
+
+## P1 填覆盖边界（核心步骤）
+1. repo 清单 → `source_registry.json` 的 `repos[]`（`{"name": "...", "git": "..."}`）
+2. 核心文档 → `docs/`；资源清单 → `resources/db.json / mq.json / hdfs.json`（照模板字段填，**必须含取数命令与字段语义**——"一条计数对应啥"）
+3. 规则收口：若 repo 内已有 SOP/verdict 类文档，在实例 `AGENTS.md` 的「引用关系」表登记从属关系，**不并立第二套模型**。
+
+## P2 首次全量刷新
+```bash
+cd <工作区> && ./tools/refresh.sh
+```
+- 会 clone 全部 repo（量大时耗时/占盘，正常）。
+- **验收（转绿，逐条核对）**：
+  - [ ] `kb.py doctor` 退出码 0，三管道计数 >0
+  - [ ] `kb.py search <业务词>` 命中且给 `file:line`
+  - [ ] 抽 1 个刚注册的 repo，search 其内某符号能命中（证明 registry 真驱动了搜索）
+  - [ ] `CHANGELOG/<本月>.md` 出现本次人话记录
+- 任一条不过 → 先查 registry 覆盖与 doctor 输出，不许"看起来差不多"就宣布完成。
+
+## P3 回答契约打样
+- 用业务方给的 3 个问题填 `kb/ontology/answer_contracts.json`：每条必须落到 `final_evidence`
+  （哪张表/哪个字段 = **最终结果**），并列出 `intermediate_states_not_answers`（禁当答案的中间态）。
+- **验收**：拿 3 个问题各问一遍，答案是结果语言（成/败/数值）；答不到终点的，契约里补"还差什么数据"。
+
+## P4 定时更新（需业务方确认，不许擅装）
+- 向业务方展示 crontab 行（实例 README 里有），**确认后**再安装；装完 `crontab -l` 贴回执。
+- 告知 review 节奏：每周扫 `CHANGELOG/<当月>.md`，见 ⚠️ 再深挖。
+
+## 完成定义（DoD）
+P0-P3 验收全绿 + P4 已确认（装或明确暂缓）+ 把首刷摘要（repo 数/索引计数/doctor 结果/遗留 TODO）交业务方。
+
+## 执行纪律（继承自宪法，此处只列高频三条）
+1. 每步验收**真跑真贴输出**，无证据不说"完成"。
+2. 文档/台账声明 ≠ 工具行为，以实测为准（search 不到 = 没接入，不管 registry 写没写）。
+3. 遇缺失输入：列清单一次性向业务方要齐，不逐条挤牙膏。
