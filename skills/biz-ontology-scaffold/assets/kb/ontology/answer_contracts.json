@@ -1,0 +1,22 @@
+{
+  "_comment": "回答契约：每条 = 一个高频业务问题 + 走到最终结果所需的完整证据链。回答必须落到 final_evidence（结果语言），不许用 intermediate_states 里的中间态当答案。以下为示例模板，P1 用你提供的 3 个真实问题替换。",
+  "contracts": [
+    {
+      "id": "EXAMPLE-punishment-final-result",
+      "question": "广告主 X 的处罚请求，最终罚成没有？",
+      "final_evidence": [
+        "TODO: 哪张表/哪个接口的哪个字段 = 处罚最终生效（如 enforcement history 的最终状态字段）",
+        "TODO: 账户最终状态的权威查询方式"
+      ],
+      "evidence_chain": [
+        "TODO: 请求入口日志（服务/关键字）",
+        "TODO: 豁免层判断结果（字段与含义，注意 default_true 类 fail-open 语义）",
+        "TODO: 执行结果（下游账户服务返回）"
+      ],
+      "intermediate_states_not_answers": [
+        "进入了惩罚路径", "未被豁免拦截", "请求已接收"
+      ],
+      "owner_repos": ["TODO: 相关 repo 名"]
+    }
+  ]
+}

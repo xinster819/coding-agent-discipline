@@ -1,0 +1,11 @@
+{
+  "_comment": "MQ 资源台账模板。P1 填真实内容。",
+  "topics": [
+    {
+      "name": "TODO-example",
+      "purpose": "一句话用途",
+      "query_howto": "TODO: 查看积压/消费/路径的命令",
+      "semantics": "关键字段/计数语义（一条对应啥）"
+    }
+  ]
+}

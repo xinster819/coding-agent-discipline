@@ -1,0 +1,23 @@
+# AGENTS.md — AI 使用本知识库的唯一规则入口（canonical）
+
+> 收口声明：本文件是本 KB 的**唯一**规则源。各 repo 内部若有自己的 AGENTS/SOP/verdict 文档，
+> 在下方「引用关系」登记它与本文件的从属关系——**不允许并立第二套模型**。
+
+## 你（AI）在本目录怎么干活
+
+1. **唯一查询面**：找任何东西先 `python3 tools/kb.py search <词>`；体检用 `kb.py doctor`。不要自己猜内部文件名。
+2. **覆盖边界以 `source_registry.json` 为准**：没注册的就是不覆盖，别假装知道；发现该覆盖没覆盖 → 提议加 registry，不要绕过。
+3. **回答业务问题走 answer_contracts**（`kb/ontology/answer_contracts.json`）：按契约把证据链走到**最终结果字段**再回答；用**结果语言**（成/败/数值），"进入了 X 流程""未被拦截"这类中间态不是答案，答不到终点就明说"最终结果我还没查到，还差 X"。
+4. **三场景入口**：业务问答 `kb/scenarios/qa.md`；异常排查 `kb/scenarios/incident.md`；指标分析 `kb/scenarios/metrics.md`。
+5. **repos/ 只读**：代码仓库由 `tools/sync.sh` 管理，禁止在里面改代码/提交（要改代码去原工作目录）。
+6. **改 KB 内容（ontology/场景卡/台账）后**：跑 `kb.py index && kb.py doctor`，并在 CHANGELOG 当月文件追加一条人话记录。
+7. 数据敏感结论：现查现引，标取数时间与口径；结论落 ground truth，代理信号只出【假设】。
+
+## 引用关系（收口台账）
+
+| 文档 | 角色 | 关系 |
+|---|---|---|
+| 本文件 | 规则 canonical | — |
+| SPEC.md | 架构 canonical | 结构性变更先改它 |
+| source_registry.json | 覆盖边界 canonical | 工具行为以它为准 |
+| （repo 内规则文档，待登记） | 从属 | 与本文件冲突时以本文件为准，冲突点须记录在此 |

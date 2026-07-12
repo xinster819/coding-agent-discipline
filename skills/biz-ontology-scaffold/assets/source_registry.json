@@ -1,0 +1,28 @@
+{
+  "_comment": "覆盖边界唯一真源。不在这里注册 = KB 不覆盖。repos[] 供 sync.sh clone/pull；*_sources 供 kb.py 索引/搜索。",
+  "repos": [],
+  "document_sources": [
+    {
+      "path": "docs",
+      "note": "核心业务文档"
+    }
+  ],
+  "code_sources": [
+    {
+      "path": "repos",
+      "note": "全部代码仓库（sync.sh 管理）"
+    }
+  ],
+  "resource_sources": [
+    {
+      "path": "resources",
+      "note": "DB/MQ/HDFS 资源台账（含取数命令）"
+    }
+  ],
+  "kb_sources": [
+    {
+      "path": "kb",
+      "note": "本体与场景卡"
+    }
+  ]
+}

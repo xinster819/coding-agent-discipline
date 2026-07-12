@@ -1,0 +1,13 @@
+{
+  "_comment": "DB 资源台账模板。每条：名称/用途/怎么查（命令或平台入口）/关键表与字段语义。P1 填真实内容。",
+  "databases": [
+    {
+      "name": "TODO-example",
+      "purpose": "一句话用途",
+      "query_howto": "TODO: 查询命令或平台入口",
+      "key_tables": [
+        { "table": "TODO", "meaning": "干什么的", "final_result_fields": "哪个字段代表最终结果（供 answer_contracts 引用）" }
+      ]
+    }
+  ]
+}
