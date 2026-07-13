@@ -1,0 +1,11 @@
+{
+  "_comment": "业务词典：用户的业务语言 → 代码/资源里的真实符号。kb.py search 自动用 aliases/code_refs 扩展查询——这是'用户问的词'与'代码里的词'之间的桥。question_log 里搜不到的业务词优先收录进来。",
+  "terms": [
+    {
+      "term": "TODO-业务词（例：黑达人）",
+      "aliases": ["口语同义词、缩写"],
+      "code_refs": ["代码符号/表名/服务名（例：vsa_black_influencer_reject）"],
+      "note": "一句话解释这个词是什么"
+    }
+  ]
+}

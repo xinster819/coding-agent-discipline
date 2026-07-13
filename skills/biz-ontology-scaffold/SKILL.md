@@ -34,6 +34,7 @@ bash scripts/init.sh <目标目录> <业务域名>
 5. **canonical 收口**——实例的 AGENTS.md 是该工作区唯一规则入口，repo 内既有 SOP/verdict 文档在其"引用关系"表登记从属，不并立第 N 套。
 6. **更新可 review**——refresh 每次追加人话 CHANGELOG（repo 新 commit 摘要/索引增减/doctor 结果/⚠️项）；doctor 失败退出码非 0 可接告警。
 7. **macOS bash 3.2 兼容**——sync.sh 不用 mapfile（实测踩过）。
+8. **提问驱动生长（P5 回路）**——KB 不预测用户问什么，靠回收真实提问长成用户的形状：`kb/question_log.md` 问答台账（答不准的必录）→ `kb/ontology/glossary.json` 业务词典（业务语言→代码符号，search 自动扩展查询）→ 同类问题 ≥2 次升级 answer_contracts。防"验收失败经验只留在对话里"（实证事故）。已有实例用 `scripts/upgrade.sh` 升级（引擎覆盖+模板增量，业务数据不动）。
 
 ## 角色分工
 本 skill（框架侧）只管：引擎、模板、SOP。**实例化、填源、部署、cron 等业务对接执行，由业务侧执行者按 [references/EXECUTION-SOP.md](references/EXECUTION-SOP.md) 完成**——那是给执行 agent 照跑的标准作业程序（P0 实例化 → P1 填边界 → P2 首刷验收 → P3 契约打样 → P4 定时确认，每步带先红后绿判据）。执行中发现框架问题回报本仓库，不在实例里魔改 tools/。

@@ -47,15 +47,42 @@ def iter_source_files(reg):
                         yield pipeline, os.path.relpath(os.path.join(dirpath, fn), ROOT)
 
 
+GLOSSARY = os.path.join(ROOT, "kb", "ontology", "glossary.json")
+
+
+def expand_terms(term):
+    """业务词典扩展：用户的业务语言 → 代码/资源真实符号。词典缺失时静默退化为原词。"""
+    terms, tl = [term], term.lower()
+    try:
+        with open(GLOSSARY, encoding="utf-8") as f:
+            for e in json.load(f).get("terms", []):
+                names = [e.get("term", "")] + e.get("aliases", []) + e.get("code_refs", [])
+                names = [n for n in names if n and not n.startswith("TODO")]
+                if any(tl in n.lower() or n.lower() in tl for n in names):
+                    terms += names
+    except (OSError, ValueError):
+        pass
+    seen, out = set(), []
+    for t in terms:
+        if t.lower() not in seen:
+            seen.add(t.lower())
+            out.append(t)
+    return out
+
+
 def cmd_search(term, limit=30):
     reg = load_registry()
+    terms = expand_terms(term)
+    if len(terms) > 1:
+        print(f"（词典扩展：{' | '.join(terms)}）")
+    lowers = [t.lower() for t in terms]
     hits = 0
-    tl = term.lower()
     for _, rel in iter_source_files(reg):
         try:
             with open(os.path.join(ROOT, rel), encoding="utf-8", errors="ignore") as f:
                 for i, line in enumerate(f, 1):
-                    if tl in line.lower():
+                    ll = line.lower()
+                    if any(t in ll for t in lowers):
                         print(f"{rel}:{i}: {line.strip()[:160]}")
                         hits += 1
                         if hits >= limit:
@@ -64,7 +91,10 @@ def cmd_search(term, limit=30):
                         break  # 每文件只报首个命中行，防刷屏
         except OSError:
             continue
-    print(f"\n共 {hits} 个文件命中 '{term}'" if hits else f"0 命中 '{term}'（检查该词是否在已注册覆盖内：source_registry.json）")
+    if hits:
+        print(f"\n共 {hits} 个文件命中")
+    else:
+        print(f"0 命中 '{term}'（① 检查覆盖：source_registry.json；② 业务词请在 kb/ontology/glossary.json 补映射；③ 把本次未命中记入 kb/question_log.md）")
     return 0 if hits else 1
 
 
@@ -119,7 +149,8 @@ def cmd_doctor(as_json=False):
         add("index_nonempty", False, "无 manifest")
 
     # 4. 关键文件在位
-    for f_ in ("AGENTS.md", "kb/ontology/answer_contracts.json"):
+    for f_ in ("AGENTS.md", "kb/ontology/answer_contracts.json",
+               "kb/ontology/glossary.json", "kb/question_log.md"):
         add(f"exists:{f_}", os.path.isfile(os.path.join(ROOT, f_)), "")
 
     ok_all = all(c["ok"] for c in checks)
