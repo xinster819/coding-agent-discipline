@@ -1,9 +1,10 @@
 {
-  "_comment": "回答契约：每条 = 一个高频业务问题 + 走到最终结果所需的完整证据链。回答必须落到 final_evidence（结果语言），不许用 intermediate_states 里的中间态当答案。以下为示例模板，P1 用你提供的 3 个真实问题替换。",
+  "_comment": "回答契约：每条 = 一个高频业务问题 + 走到最终结果所需的完整证据链。回答必须落到 final_evidence（结果语言），不许用 intermediate_states 里的中间态当答案。decision_risk=high（答错会导致真实决策损失）的契约：final_evidence 必须含**两条相互独立**的证据链（如 代码上游准入 + 线上数据实测），两链不一致时答案固定为『两个来源不一致，别决策，差异在 X』。以下为示例模板，P1 用真实问题替换。",
   "contracts": [
     {
       "id": "EXAMPLE-punishment-final-result",
       "question": "广告主 X 的处罚请求，最终罚成没有？",
+      "decision_risk": "high",
       "final_evidence": [
         "TODO: 哪张表/哪个接口的哪个字段 = 处罚最终生效（如 enforcement history 的最终状态字段）",
         "TODO: 账户最终状态的权威查询方式"
