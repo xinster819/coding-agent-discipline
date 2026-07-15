@@ -33,6 +33,11 @@ EXTERNAL = re.compile(
     re.IGNORECASE,
 )
 
+# —— 裸放弃（终局性"不可得"断言）：与"完成"对称，必须带【尽力未得】已试清单/报错证据 ——
+#    注意只收终局措辞；"还没查到/正在试"是诚实进行时，不拦。
+GIVEUP = ["查不到", "取不到", "拿不到", "无法获取", "获取不到", "没法查", "查询不了", "不支持查询"]
+GIVEUP_OK = ["【尽力未得】", "已试", "试过", "尝试了"]  # 放弃场景的专属放行标记（还需全局证据标记之一）
+
 # —— 证据/谦逊标记：出现任一即视为已附证据或已降级，放行 ——
 EVIDENCE = [
     "【假设", "【未验证", "未验证", "我还没验证", "尚未验证", "没验证",
@@ -99,6 +104,11 @@ def main():
     if EXTERNAL.search(text):
         hits.append("外部工具能力断言（支持/不支持）")
 
+    # 裸放弃：终局性"不可得"且没带任何"已试"痕迹 → 拦（与"完成要证据"对称）
+    giveup_hits = [w for w in GIVEUP if w in text]
+    if giveup_hits and not any(m in text for m in GIVEUP_OK):
+        hits.append("裸放弃（" + "、".join(giveup_hits[:3]) + "——未附已试清单）")
+
     if hits:
         reason = (
             "⛔ verify-guard 拦截：回复里出现无证据的断言【"
@@ -107,6 +117,8 @@ def main():
             "或【假设·未验证】标签。\n"
             "按完成铁律与 verify-before-claiming：要么**当场跑命令 / 查文件**并贴出证据，"
             "要么把该结论改标【假设·未验证】+ 置信度，然后再结束。\n"
+            "若是宣布'查不到/不可得'：按 self-help-first 的举证义务——先枚举入口空间"
+            "（--help/子命令/文档），试满 ≥3 个不同入口，用【尽力未得】格式附已试清单+报错+剩余未试项。\n"
             "（若确属误报：补一个证据标记 / 代码块即可放行；触发词列表在 hooks/verify-guard.py。）"
         )
         print(json.dumps({"decision": "block", "reason": reason}, ensure_ascii=False))

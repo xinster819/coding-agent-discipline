@@ -12,9 +12,7 @@
 - [x] 数据解读纪律：证伪优先 + 结果分布 + 反惊悚（aef488e）
 
 ## 待做
-- [ ] **self-help-first 补"假边界 + 举证不可得"**（覆盖过度保守/偷懒侧）
-  - 完成判据：self-help-first 假红灯清单加"'取不到/不支持'只试默认工具就宣布=假边界"；verify-before-claiming/AGENTS 加"宣布不可得也要贴穷尽了哪些路径"
-  - 依赖：无。优先级最高（唯一已提出未实现的规则缺口）
+- [x] **self-help-first 补"假边界 + 举证不可得"**（覆盖过度保守/偷懒侧）——**拖欠多轮后因 bytedcli rds 复发（case 13）才落地，教训已记**：self-help-first 假红灯+【尽力未得】举证义务；AGENTS ④ 对称条款；verify-guard 加 GIVEUP 拦裸放弃（hook_eval 6/6）；框架 AGENTS 模板 6a+取数通道回写台账
 - [ ] **核实 Trae 能否自动导入 commands/**
   - 完成判据：给出确证的路径/结论，更新 INSTALL.md + docs/trae-user-rules.md 里的"待核实"字样
   - 依赖：需在真实 Trae 里验证
