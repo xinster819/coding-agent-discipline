@@ -6,6 +6,7 @@
 ## 你（AI）在本目录怎么干活
 
 1. **唯一查询面**：找任何东西先 `python3 tools/kb.py search <词>`；体检用 `kb.py doctor`。不要自己猜内部文件名。
+   **用内部平台/CLI（bytedcli/TCE/RDS/Argos…）取数或排查前，先查全局基建手册 `~/.ai-coding-pack/infra-playbook/`**（任务路由/参数陷阱/权限地址簿）；踩通新入口回写该手册（跨项目共享），业务专属的表/字段语义才写本实例 `resources/` 台账。
 2. **覆盖边界以 `source_registry.json` 为准**：没注册的就是不覆盖，别假装知道；发现该覆盖没覆盖 → 提议加 registry，不要绕过。
 3. **回答业务问题走 answer_contracts**（`kb/ontology/answer_contracts.json`）：按契约把证据链走到**最终结果字段**再回答；用**结果语言**（成/败/数值），"进入了 X 流程""未被拦截"这类中间态不是答案，答不到终点就明说"最终结果我还没查到，还差 X"。
 4. **三场景入口**：业务问答 `kb/scenarios/qa.md`；异常排查 `kb/scenarios/incident.md`；指标分析 `kb/scenarios/metrics.md`。
