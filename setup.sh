@@ -28,6 +28,14 @@ rm -rf "$DEST/docs" && cp -R "$SRC_DIR/docs" "$DEST/docs"
 rm -rf "$DEST/hooks" && cp -R "$SRC_DIR/hooks" "$DEST/hooks"
 echo "  已复制 AGENTS.md、skills/、commands/、docs/、hooks/ 到 $DEST"
 
+# infra-playbook 是可生长数据（agent 踩坑回写在这里）：只初始化一次，永不覆盖
+if [ ! -d "$DEST/infra-playbook" ]; then
+  cp -R "$SRC_DIR/skills/infra-debug-playbook/templates" "$DEST/infra-playbook"
+  echo "  已初始化 $DEST/infra-playbook（基建实战账本，之后由 agent 回写生长）"
+else
+  echo "  跳过 infra-playbook（已存在，内含踩坑回写数据，不覆盖）"
+fi
+
 echo "==> 2. Claude Code（~/.claude）"
 mkdir -p "$HOME/.claude/skills" "$HOME/.claude/commands"
 backup "$HOME/.claude/CLAUDE.md"

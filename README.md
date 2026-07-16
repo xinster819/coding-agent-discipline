@@ -25,7 +25,7 @@
 ## 架构：两层，不堆料
 
 - **RULE（编码协作宪法 = `AGENTS.md`）**：永久人格 + 六大纪律的**基线**，始终加载，刻意精简（每条都得改变行为，否则删）。
-- **SKILL（9 个领域流程）**：靠 `description` 关键词**按需触发**，省上下文，放需要展开的深流程。**5 个纪律**（约束 agent 怎么思考/干活）+ **2 个代码库导航**（project-kb-production / refresh）+ **1 个调查**（hypothesis-ledger，假设账本深挖）+ **1 个脚手架**（biz-ontology-scaffold，一条命令实例化业务知识库工作区）。
+- **SKILL（10 个领域流程）**：靠 `description` 关键词**按需触发**，省上下文，放需要展开的深流程。**5 个纪律**（约束 agent 怎么思考/干活）+ **2 个代码库导航**（project-kb-production / refresh）+ **1 个调查**（hypothesis-ledger，假设账本深挖）+ **1 个脚手架**（biz-ontology-scaffold）+ **1 个基建实战手册**（infra-debug-playbook，任务→已验证命令/陷阱/权限地址簿，踩通必回写自生长）。
 - **COMMAND（5 个 slash command）**：手动 `/` 显式调用的薄命令层——3 个 handoff（项目跨 session 接力）+ 2 个 KB 别名（`/kb-init`、`/kb-refresh`，详见下方速查）。
 - **HOOK（机制兜底，可选但强烈建议）**：`hooks/verify-guard.py`——RULE/SKILL 是强引导可被绕过，hook 是**唯一不靠模型自觉**的一层。作为 Claude Code Stop hook，拦截"无证据的成功/能力断言"（如"修好了""X 不支持 Y"）并打回要证据。安装见 `hooks/README.md`。
 - **EVAL（改规则前后跑，防凭轶事迭代）**：`evals/`——hook 自动评测（拦截率/误报率）+ 真实失败案例卡。改任何规则/hook 后跑 `python3 evals/hook_eval.py`，用数据判断这版是正向还是负向，见 `evals/README.md`。
@@ -87,7 +87,7 @@ Claude Code 原生 slash command；其他工具用 `docs/handoff-prompts.md` 的
 ```bash
 git clone <本仓库地址> coding-agent-discipline
 cd coding-agent-discipline
-bash setup.sh        # 全局装：宪法 + 9 skill + 5 slash command，单一真源在 ~/.ai-coding-pack
+bash setup.sh        # 全局装：宪法 + 10 skill + 5 slash command，单一真源在 ~/.ai-coding-pack
 ```
 
 `setup.sh` 会把本包复制到 `~/.ai-coding-pack`（**单一真源**），再从各工具全局目录符号链接过去——以后改规则只改这一处，所有工具同步生效。装完即生效，无需重启会话。
