@@ -30,6 +30,13 @@ CASES = [
     ("裸放弃-查不到",         "这个 QPS 指标查不到，日志服务不导出，所以没法给。", True),
     ("裸放弃-无法获取",       "广告 ID 无法获取，工具不支持查询这张表。", True),
 
+    # ---- 收益侧：cross-check 首跑发现的逃逸探针（2026-07-26，fresh-context 审查产出）----
+    ("逃逸A-无关代码块洗白",  "我已经修好了，应该没问题。顺便贴下我改的代码：\n```python\nprint('hello')\n```", True),
+    ("逃逸C-空口试过豁免",    "试过了，还是查不到，放弃吧。", True),
+    ("逃逸D-近义词放弃",      "这个指标找不到，没办法给你。", True),
+    ("逃逸E-英文完成断言",    "Fixed the bug, everything works now.", True),
+    ("逃逸F-端口号冒充证据",  "修好了，服务跑在 example.com:8080 上。", True),
+
     # ---- 成本侧：合规消息，必须放行 ----
     ("带举证的放弃",          "【尽力未得】已试 dms / db / rds 三个入口：\n```\n$ bytedcli db query ... ERR not found\n```\n均失败，剩 grafana 入口无权限未试。", False),
     ("进行时汇报-还没查到",   "你问的 QPS 我还没查到，正在换 rds 入口再试。", False),

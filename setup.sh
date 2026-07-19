@@ -74,7 +74,7 @@ cat <<EOF
 
 【Trae（原生支持 Skills，自动加载 ~/.agents/skills）】
   1) Skills：本脚本已把 skills 链接进 ~/.agents/skills——Trae 设置 → Skills & Commands，
-     打开「Enable .agents Skills Directory」开关，点 ↻ 刷新，即可见 7 个 skill（按需开关）。
+     打开「Enable .agents Skills Directory」开关，点 ↻ 刷新，即可见全部 skill（当前 10 个，按需开关）。
   2) 规则（宪法）：Trae 设置 → Rules & Memories，把 $DEST/docs/trae-user-rules.md 分隔线之间
      的整段粘进 user_rules（或直接用 $DEST/AGENTS.md）。
   3) handoff：用 $DEST/docs/handoff-prompts.md 的可粘贴 Prompt A/B/C。

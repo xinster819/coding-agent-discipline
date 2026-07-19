@@ -14,7 +14,7 @@
 | **L3 知识复利** | 每次踩坑/踩通→永久资产，跨 session/项目共享 | question_log（问答台账）、playbook 回写纪律、长期记忆、CHANGELOG、handoff 三件套 | 🟡 机制齐，靠纪律驱动 |
 | **L4 反馈回路** | 知道什么是好，才能变好；一切争论用数据终结 | evals/：hook 自动评测（拦截 6/6、误报实时计数）＋14 失败卡＋**3 正例卡（exemplars）**；KB 抽检+熔断制度；**三指标台账 `evals/metrics-log.md`（2026-07-26 起记）** | 🟡 台账已启用；抽检待业务侧首跑 |
 | **L5 任务设计** | 同一 agent，任务表述不同表现天差地别 | goal/Stop-hook（实证有效）；覆盖矩阵；验收先红后绿；**高预算任务简报模板**（`docs/task-briefing.md` + **`/task-brief` 命令**） | ✅ 一条命令可用 |
-| **L6 协作结构** | 单 context 的盲区靠另一个 context 补 | fresh-context 反驳（SOP/抽检流程内）；**`/cross-check` 命令**（隔离上下文+四把刀+三态产出） | ✅ 一条命令可用，待首跑 |
+| **L6 协作结构** | 单 context 的盲区靠另一个 context 补 | fresh-context 反驳（SOP/抽检流程内）；**`/cross-check` 命令**（隔离上下文+四把刀+三态产出） | ✅ **已首跑并见效**：首轮审查发现 hook 5 个逃逸漏洞并当天修复（exemplars/04） |
 | **L0 下限地基** | 可信度：不撒谎/不早弃/不降级/不虚标 | 宪法七章、10 skill、5 command、verify-guard hook（全局已配）、trae bundle | ✅ **冻结**：只减不加，只攒正例 |
 
 ## 二、L1：effort 选档（科学选，不盲目最大化）

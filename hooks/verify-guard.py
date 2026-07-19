@@ -22,6 +22,7 @@ import sys
 # —— 宪法明令禁用（无证据时不得出现）。命中其一即候选拦截。——
 BANNED = [
     "should work", "probably", "seems to", "done!", "perfect!",
+    "fixed the", "works now", "all tests pass", "everything works",
     "应该没问题", "应该可以", "基本没问题", "基本好了", "逻辑上肯定对",
     "修好了", "搞定了", "肯定没问题", "应该就好了", "妥了",
 ]
@@ -35,16 +36,22 @@ EXTERNAL = re.compile(
 
 # —— 裸放弃（终局性"不可得"断言）：与"完成"对称，必须带【尽力未得】已试清单/报错证据 ——
 #    注意只收终局措辞；"还没查到/正在试"是诚实进行时，不拦。
-GIVEUP = ["查不到", "取不到", "拿不到", "无法获取", "获取不到", "没法查", "查询不了", "不支持查询"]
-GIVEUP_OK = ["【尽力未得】", "已试", "试过", "尝试了"]  # 放弃场景的专属放行标记（还需全局证据标记之一）
+GIVEUP = ["查不到", "取不到", "拿不到", "无法获取", "获取不到", "没法查", "查询不了", "不支持查询",
+          "找不到", "没办法给", "没法给"]
+# 放弃场景的放行标记：空口"试过了"不算（cross-check 探针 C 实证可绕），须带【尽力未得】或"已试"清单
+GIVEUP_OK = ["【尽力未得】", "已试"]
 
 # —— 证据/谦逊标记：出现任一即视为已附证据或已降级，放行 ——
 EVIDENCE = [
     "【假设", "【未验证", "未验证", "我还没验证", "尚未验证", "没验证",
     "❓", "💭", "✅", "置信度", "退出码", "exit code", "检索于", "据我所知",
 ]
-# file:line 形式（如 setup.sh:42）也算证据
-FILELINE = re.compile(r"[\w./\-]+\.\w+:\d+")
+# file:line 形式（如 setup.sh:42）也算证据——限定代码类扩展名，防 host:port（example.com:8080）冒充
+FILELINE = re.compile(
+    r"[\w./\-]+\.(?:py|go|ts|tsx|js|jsx|java|kt|rs|rb|c|cc|cpp|h|sh|md|json|yaml|yml|toml|sql|proto|thrift)\b:\d+")
+# 代码块只有含"运行痕迹"才算证据（$ 提示符/退出码/通过失败/报错）——防"贴段新代码"洗白（探针 A）
+EVIDENCE_BLOCK = re.compile(
+    r"```[^`]*?(\$ |exit[ =]|退出码|passed|failed|PASS|FAIL|ERR\b|[Ee]rror|Traceback|报错|通过)[^`]*?```", re.S)
 
 
 def last_assistant_text(path):
@@ -96,8 +103,9 @@ def main():
 
     low = text.lower()
 
-    # 有代码块 / 证据标记 / file:line → 已附证据，放行
-    if "```" in text or FILELINE.search(text) or any(m.lower() in low for m in EVIDENCE):
+    # 有"带运行痕迹的代码块" / file:line / 证据标记 → 已附证据，放行
+    # （纯代码块不算——"修好了+贴段新代码"是最常见的真实违例形态，cross-check 探针 A 实证）
+    if EVIDENCE_BLOCK.search(text) or FILELINE.search(text) or any(m.lower() in low for m in EVIDENCE):
         sys.exit(0)
 
     hits = [w for w in BANNED if w.lower() in low]
