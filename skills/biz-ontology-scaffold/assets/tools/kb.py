@@ -93,9 +93,34 @@ def cmd_search(term, limit=30):
             continue
     if hits:
         print(f"\n共 {hits} 个文件命中")
-    else:
-        print(f"0 命中 '{term}'（① 检查覆盖：source_registry.json；② 业务词请在 kb/ontology/glossary.json 补映射；③ 把本次未命中记入 kb/question_log.md）")
-    return 0 if hits else 1
+        return 0
+    # 0 命中 → 模糊兜底：2 字滑窗词元重叠排序（自然语言问句场景；实测 Recall@3 12/13,
+    # 与 Mem0+bge-small-zh 语义检索打平——见 docs/research-memory-systems-2026.md 基准）。
+    # 只扫 docs/resources/kb 管道（知识文档），不扫 code（量大且问句场景不需要）。
+    def _shingles(s):
+        s = "".join(ch for ch in s.lower() if ch.isalnum() or "一" <= ch <= "鿿")
+        return {s[i:i + 2] for i in range(len(s) - 1)}
+    qs = _shingles(term)
+    if qs:
+        scored = []
+        for pipeline, rel in iter_source_files(reg):
+            if pipeline == "code":
+                continue
+            try:
+                with open(os.path.join(ROOT, rel), encoding="utf-8", errors="ignore") as f:
+                    ov = len(qs & _shingles(f.read()[:4000]))
+                if ov:
+                    scored.append((ov, rel))
+            except OSError:
+                continue
+        scored.sort(reverse=True)
+        if scored:
+            print(f"0 精确命中，模糊匹配（词元重叠）top{min(5, len(scored))}：")
+            for ov, rel in scored[:5]:
+                print(f"  ~ {rel}  (重叠度 {ov})")
+            return 0
+    print(f"0 命中 '{term}'（① 检查覆盖：source_registry.json；② 业务词请在 kb/ontology/glossary.json 补映射；③ 把本次未命中记入 kb/question_log.md）")
+    return 1
 
 
 def cmd_index():
