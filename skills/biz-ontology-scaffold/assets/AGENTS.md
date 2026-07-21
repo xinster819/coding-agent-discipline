@@ -11,7 +11,7 @@
 3. **回答业务问题走 answer_contracts**（`kb/ontology/answer_contracts.json`）：按契约把证据链走到**最终结果字段**再回答；用**结果语言**（成/败/数值），"进入了 X 流程""未被拦截"这类中间态不是答案，答不到终点就明说"最终结果我还没查到，还差 X"。
 4. **三场景入口**：业务问答 `kb/scenarios/qa.md`；异常排查 `kb/scenarios/incident.md`；指标分析 `kb/scenarios/metrics.md`。
 5. **repos/ 只读**：代码仓库由 `tools/sync.sh` 管理，禁止在里面改代码/提交（要改代码去原工作目录）。
-6. **改 KB 内容（ontology/场景卡/台账）后**：跑 `kb.py index && kb.py doctor`，并在 CHANGELOG 当月文件追加一条人话记录。**踩通任何新取数通道（命令/入口/地域参数）后，必须当场回写 `resources/` 台账的 `query_howto`**——下一次（或下一个 agent）就不用重新踩（实录：rds db query 入口靠用户纠正才找到，台账里本该有）。
+6. **改 KB 内容（ontology/场景卡/台账）后**：跑 `kb.py index && kb.py doctor`，并在 CHANGELOG 当月文件追加一条人话记录。**踩通任何新取数通道（命令/入口/地域参数）后，必须当场回写 `resources/` 台账的 `query_howto`**——下一次（或下一个 agent）就不用重新踩（实录：rds db query 入口靠用户纠正才找到，台账里本该有）。**回写时机遵循 ASSUME INTERRUPTION（Anthropic memory tool 纪律）：边干边写、随时可断——不要攒到收工再回写，你的上下文可能在任何时刻被重置，没落盘的发现=没发生。**
 6a. **宣布"查不到/取不到"前的举证义务**：先读全工具 `--help`/子命令树枚举入口空间，试满 ≥3 个不同入口（附报错），用【尽力未得】格式给出已试清单+剩余未试项；只试一两个入口就说"查不到"= 自判假边界（实录教训同上）。
 7. 数据敏感结论：现查现引，标取数时间与口径；结论落 ground truth，代理信号只出【假设】。
 8. **存在性断言的证据分级（阴性≠无，阳性≠有）**：回答"机制 X 存不存在 / 业务 Y 参不参与流程 Z"——
