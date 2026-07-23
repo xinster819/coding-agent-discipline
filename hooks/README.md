@@ -40,3 +40,13 @@
 两者都有 hook 机制（Trae 设置侧栏有 **Hooks** 面板；Codex 有 hooks 配置）。
 
 ⚠️ **但它们的事件名 / 配置格式我尚未核实**——按本仓库这次的教训（别对外部工具当前行为凭记忆断言），这里**不写未经验证的配置**。要在 Trae/Codex 上装这个 guard，先对照各自官方 Hooks 文档确认"响应结束"类事件怎么配，或让我先查证再给你确切配置。脚本本身（读 stdin JSON、输出 block 决策）是通用的，可能需按各工具的 hook I/O 约定改一层适配。
+
+---
+
+## goal-guard.py（/goal 的确定性等价物，Claude Code 与 Codex 通用）
+
+**做什么**：Stop hook。项目根存在 `TASK_GOAL.md`（由 /task-brief 流程创建，checkbox 判据清单）时，仍有 `- [ ]` 未勾且无【尽力未得】段 → 不许收工。**opt-in**：没有该文件的普通会话零影响。出口三选一：判据全勾 / 写【尽力未得】举证段 / 删除文件（显式放弃）。fail-open，`stop_hook_active` 防死循环。已实测 5 用例（拦/放/举证放行/无文件放行/防循环）。
+
+**为什么存在**：/goal 是 Claude Code 独有；Codex/CoCo 没有等价命令，文字规则又被实证不足以抗漂移（arXiv 2505.02709：抗漂移与指令遵循弱相关）。本 hook 用确定性文件检查把"目标未达不许停"带到任何支持 Stop hook 的工具。
+
+**安装**：Claude Code 全局与 Codex hooks.json 的 Stop 里加 `python3 "$HOME/.ai-coding-pack/hooks/goal-guard.py"`。CoCo 的 hook 机制未实测【待核实】。
