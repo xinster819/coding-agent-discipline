@@ -1,52 +1,47 @@
 # HANDOFF — coding-agent-discipline
 
-> 首建于本 session（此前无 handoff 文件）。内容来自 git log + 会话记录，只指路径不贴代码。
+> 刷新于 goal-guard 落地后（cfb99eb）。只指路径不贴代码。
 
-## 一句话目标
-一个"编码协作能力包"：不改模型，靠 **RULE（宪法）+ SKILL + COMMAND + HOOK** 四层，让 AI 编码 agent（Claude Code / Codex / CoCo / Trae）与用户的高标准工作习惯契合。仓库要长期作为"AI Coding 常用能力仓库"。
+## 一句话目标（已升级）
+**Mission：探索最大化 agent 潜力**（用户明确重定位，不只是规则注入）。六层杠杆全景与优先级：`docs/potential-roadmap.md`（canonical）。规则层已冻结（只减不加、只攒正例）。
 
 ## 结构现状
-- 宪法：`AGENTS.md`（安全底线 + 六大纪律 + 流程索引）；`CLAUDE.md` 用 `@AGENTS.md` 引用。
-- 7 skill：5 纪律（verify-before-claiming / self-help-first / challenge-me / blindspot-scan / retro）+ 2 导航（project-kb-production / project-kb-refresh）。
-- 5 command：handoff-init/resume/save + kb-init/kb-refresh（`commands/`）。
-- hook：`hooks/verify-guard.py`（Stop hook，拦无证据断言）+ `hooks/README.md`；项目级挂在 `.claude/settings.json`。
-- docs：`docs/handoff-prompts.md`（无 slash 工具的兜底）、`docs/trae-user-rules.md`（Trae 规则层 bundle）。
-- 安装：`setup.sh`（全局，单一真源 `~/.ai-coding-pack`）、`install-into-project.sh`（项目级）。
+- 宪法 `AGENTS.md`（安全底线+七章，含「七、探索精神」正面授权）；trae bundle=`docs/trae-user-rules.md`（手工派生，改宪法要同步它）。
+- **10 skill**：5 纪律 + 2 KB 导航 + hypothesis-ledger + biz-ontology-scaffold（含 EXECUTION-SOP/init/upgrade 脚本）+ infra-debug-playbook（三表自生长，数据在 `~/.ai-coding-pack/infra-playbook/`，setup.sh 永不覆盖）。
+- **7 command**：handoff×3 + kb×2 + **/task-brief**（判据先红后绿→写 TASK_GOAL.md）+ **/cross-check**（fresh-context 证伪/抽检）。
+- **2 hook**（机制层）：`verify-guard.py`（拦无证据断言+裸放弃，评测 11/11）+ `goal-guard.py`（/goal 确定性等价物：TASK_GOAL.md 有未勾判据不许停，5/5 实测）。挂载：Claude Code 全局 settings.json + **Codex hooks.json**（Codex 有与 CC 同构的 hook 机制，实测确认）。
+- **evals/**：hook_eval 自动评测 + 14 失败卡 + 4 正例卡（exemplars）+ metrics-log 三指标台账 + README（正负并重方法论）。
+- 业务实例（4 个，引擎已全升级至分块模糊版）：content_workflow（最活跃，26 条 question_log）、customer_experience、bios、biz-ontology（原型）。
 
-## 已完成（近 5 个 commit，已验证）
-- `aef488e` 数据解读纪律：证伪优先 + 结果分布 + 反惊悚（AGENTS ① / verify-before-claiming step6 / blindspot 维度2 / trae bundle 同步）
-- `d71375b` verify-guard hook（实测 5 用例）+ 外部声明纪律 + 修正 Trae 过时文档（Trae 实为原生支持 Skills，自动加载 ~/.agents/skills）
-- `2073ac2` /kb-init /kb-refresh 短别名
-- `1edb9ad` 纳入 KB 两件套
-- `4a61566` 融入 handoff 三件套 + behavior-audit 并入 challenge-me
+## 本 arc 关键决策（新增）
+- **Mem0 不引入**（两轮实测：真实业务 KB 14 条真实提问上,20 行词元重叠与向量打平,分块模糊 14/14@3 唯一全对；升级判据预置在 `docs/research-memory-systems-2026.md`）。
+- **goal drift 调研结论**：我们的 handoff/goal/结案门禁与 Anthropic 官方 harness 逐件同构；真缺口=执行期复诵，已补进 task-brief（`docs/research-goal-drift-2026.md`）。
+- **"同构≠等效"教训**：思想同构的文本规则执行力远低于机制；Codex 此前零机制是持续犯错主因——已补 verify-guard+goal-guard 两个 hook。
+- effort 选档：两轴(错误代价×验证成本)+触发式升档，不盲目拉满（宪法七·深度自调节）。
+- 案例卡实录必须向当事 agent 一手复盘核准（case 14 曾按用户转述写错两处）。
 
 ## 进行中 / 下一步第一动作
-- **无正在写的代码**。当前状态：所有改动已提交推送，`main` 与 `origin/main` 同步。
-- **下一步第一动作（若续命）**：落地下方"待做 #1"——self-help-first 的"假边界/举证不可得"迭代（这是唯一被提出但未实现的规则缺口）。
+- 全部已提交推送，`main`=`origin/main`（最新 cfb99eb）。
+- **待用户侧确认的两件**：①Codex 下次启动会弹 hook 信任确认（verify-guard/goal-guard/捕获器），需点允许；②跑一次 Codex 会话后，读 `~/.codex/verify-guard-stdin-capture.jsonl` 确认 Stop hook 数据格式与 CC 一致（不一致则改兼容层——这是下个 session 第一动作）。
 
 ## 待做（按优先级）
-1. **[规则缺口] self-help-first 补"假边界 + 举证不可得"**：覆盖"过度保守/偷懒"这一侧（如"QPS 取不到"其实是没用对工具）。上一轮提出过 2 条方案（假红灯加"自判假边界"；verify-before-claiming/AGENTS 加"宣布不可得也要举证"），**用户未拍板、未实现**。这是与"证伪"对称的另一极性，建议优先。
-2. **[核实] Trae 是否能自动导入 `commands/`**：Trae 有 Commands 面板，但能否吃本包 command 文件未验证（当前标"待核实"）。
-3. **[核实] Codex 自定义 prompt/command 目录路径**：commands 目前只对 Claude Code 确证；Codex 走 `docs/handoff-prompts.md` 兜底。
-4. **[核实] Trae/Codex 的 hook 事件名与配置格式**：verify-guard 只在 Claude Code 确证；`hooks/README.md` 已标"未核实不臆造"。
+1. **[验证] Codex hook 格式确认**（见上）——确认后删捕获器条目。
+2. **[修复] verify-guard 引用语境误报第 3 例已出现**（cases/08 已记）：GIVEUP 命中时检查条件式句式（"就标注/不许/若"）；改完 hook_eval 拦截率 11/11 不许掉。
+3. **[执行] L4 数据**：两周三指标回填（evals/metrics-log.md，基线周 2026-07-26 起）+ KB 抽检第一轮（业务侧用 /cross-check）。
+4. [核实] Trae Commands 面板能否导入本包 commands/；CoCo hook 机制。
+5. [挂起带判据] Mem0 试点触发条件见 research-memory-systems 文档。
 
-## 已知坑 & workaround
-- **单一真源是"拷贝"不是软链**：`setup.sh` 把仓库 `cp` 到 `~/.ai-coding-pack`，各工具再软链到它。**改了仓库 ≠ 全局已更新**——必须重跑 `bash setup.sh` 才生效（Trae 还要在 Skills 面板点 ↻）。
-- **hook 启动时加载**：`.claude/settings.json` 里的 Stop hook 中途加不生效，要**新开 session**；用 `/hooks` 查是否加载。
-- **docs/trae-user-rules.md 与 AGENTS.md 会漂移**：它是手写的 Trae 规则层 bundle，非自动派生；改 AGENTS.md 记得同步它（本次已同步"证伪"条）。
-- **verify-guard 是 tripwire 非保证**：只认已约定禁用词 + 外部能力断言正则；**测不出"缺席型"错误**（没查反面字段、偷懒没试够）；fail-open。
-
-## 关键决策记录（为什么这么选）
-- **behavior-audit 并入 challenge-me 而非独立 skill**：守"宪法瘦、不堆料"，两者都是反谄媚决策审查。
-- **不纳入 stability-dashboard-builder**：重型 SRE 专用、已全局安装，会让仓库变杂货铺。
-- **数据解读错误的杠杆放在"证伪"而非 hook**：这类是缺席型错误，hook 难可靠检测；rule 层 + 高风险时 fresh-context 反驳是现实最优。
-- **不承诺"彻底避免"**：规则是强引导非硬约束；反复向用户强调这点（诚实 > 让用户安心）。
+## 已知坑 & workaround（新增项）
+- **单一真源是拷贝**：改仓库后必须 `bash setup.sh` 才到全局；实例还要 `upgrade.sh`（升级链：仓库→setup.sh→~/.ai-coding-pack→upgrade.sh→实例）。
+- hook 启动时加载，`/clear` 大概率不重载 hook（未实证），重开会话才稳。
+- verify-guard 已知红灯=元讨论/引用语境误报（3 例，cases/08）；goal-guard 是 opt-in（无 TASK_GOAL.md 零影响）。
+- Mem0 若将来试点：PostHog 遥测默认开（MEM0_TELEMETRY=false）、纯检索也要占位 key、v2 search 用 filters 签名。
+- 台账新发现：问过的问题连答案落在 question_log，重复提问直接命中（L3 复利生效实证）。
 
 ## 如何验证 / 运行
-- 脚本语法：`bash -n setup.sh install-into-project.sh`
-- hook：`python3 hooks/verify-guard.py`（喂造的 transcript JSON，见 hooks/README「已实测」）
-- 全局安装：`bash setup.sh`；项目级：`bash install-into-project.sh <proj>`
-- 无自动化测试套件（这是文档/prompt 仓库，不是应用代码）。
+- hook：`python3 evals/hook_eval.py`（exit 1=仅已知红灯正常）；goal-guard 手测见 hooks/README。
+- KB 引擎：任一实例 `python3 tools/kb.py doctor && python3 tools/kb.py search <业务问句>`。
+- 基准复跑：scratchpad/memory_bench{,2}.py（venv 在 scratchpad/m0env）。
 
-## 记忆（在仓库外，不随 git）
-`~/.claude/projects/-Users-bytedance-Personal-Projects-coding-agent-discipline/memory/`：verify-external-claims、falsify-data-conclusions、trae-supports-skills-natively。
+## 记忆（仓库外）
+`~/.claude/projects/-Users-bytedance-Personal-Projects-coding-agent-discipline/memory/`：mission-maximize-agent-potential（六层+规则冻结）、verify-external-claims、falsify-data-conclusions、trae-supports-skills-natively。

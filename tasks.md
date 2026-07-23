@@ -1,30 +1,32 @@
 # tasks — coding-agent-discipline
 
-> 首建于本 session。[x]=已完成并验证，[ ]=待做。
+> 刷新于 goal-guard 落地后（cfb99eb）。[x]=已完成并验证。
 
-## 已完成（本 arc）
-- [x] 融入 handoff 三件套 commands + behavior-audit 精华并入 challenge-me（commit 4a61566）
-- [x] 纳入 KB 两件套 project-kb-production / project-kb-refresh（1edb9ad）
-- [x] 加 /kb-init /kb-refresh 短别名（2073ac2）
-- [x] 写 verify-guard hook 并实测 5 用例 + 挂进 .claude/settings.json（d71375b）
-- [x] 强化外部声明纪律（二手文档/记忆不算验证）（d71375b）
-- [x] 修正所有 "Trae 不支持 skill" 过时文档（d71375b）
-- [x] 数据解读纪律：证伪优先 + 结果分布 + 反惊悚（aef488e）
+## 已完成（本 arc 全量,按时间序）
+- [x] handoff 三件套 + behavior-audit 并入 challenge-me（4a61566）
+- [x] KB 两件套纳入 + /kb 别名（1edb9ad/2073ac2）
+- [x] verify-guard hook + 外部声明纪律 + Trae 文档修正（d71375b）
+- [x] 数据解读纪律：证伪优先（aef488e）
+- [x] hypothesis-ledger skill / 先答所问纪律 / ground truth 精简（7640913）
+- [x] eval 体系（hook_eval + 失败卡 + 基线）（2cfedf0）
+- [x] ontology spec 复盘收编：验收先红后绿/事实前提表/canonical 收口（ff5e664）
+- [x] biz-ontology-scaffold skill + EXECUTION-SOP + P5 提问驱动生长回路（f66833d/8df9064/028f004）
+- [x] R&F 复盘收编：存在性断言证据分级（d9dd0b4）；KB 校准三件套：可决策性标注/抽检/熔断（28ed301）
+- [x] "早弃"侧纪律 + hook 拦裸放弃（71d2abf）；"静默降级"最优近似义务（d4e1366）；case14 按一手复盘修正 + 结案门禁（d391169）
+- [x] 正例库 exemplars + 宪法七探索精神（5f15c2b）；mission 重定位六层杠杆（cbfaa2c）；effort 科学选档（1b7488c）
+- [x] 完整方案收口 + /task-brief /cross-check + metrics-log + 收工三问（9a922ad/31cdde3）
+- [x] 全链路自测 + cross-check 首跑修 hook 5 逃逸（410b3cd）；infra-debug-playbook（4183ce2/1bf87ce）
+- [x] agent 方案调研 + 记忆系统下钻 + Mem0 两轮实测不引入 + 分块模糊实装全实例（4dec625→ac502cd）
+- [x] goal drift 调研 + recitation 进 task-brief（b6609a6）；goal-guard hook 挂 Codex+CC（cfb99eb）
+- [x] Codex 机制层 debug：确认 Codex 支持 Stop hook,verify-guard/goal-guard 已挂
 
 ## 待做
-- [x] **self-help-first 补"假边界 + 举证不可得"**（覆盖过度保守/偷懒侧）——**拖欠多轮后因 bytedcli rds 复发（case 13）才落地，教训已记**：self-help-first 假红灯+【尽力未得】举证义务；AGENTS ④ 对称条款；verify-guard 加 GIVEUP 拦裸放弃（hook_eval 6/6）；框架 AGENTS 模板 6a+取数通道回写台账
-- [ ] **核实 Trae 能否自动导入 commands/**
-  - 完成判据：给出确证的路径/结论，更新 INSTALL.md + docs/trae-user-rules.md 里的"待核实"字样
-  - 依赖：需在真实 Trae 里验证
-- [ ] **核实 Codex 自定义 prompt/command 目录**
-  - 完成判据：确证后在 setup.sh/INSTALL.md 去掉"按你的版本核实"，或确认无此机制
-- [ ] **核实 Trae/Codex 的 hook 配置格式**，让 verify-guard 能在这两个工具挂上
-  - 完成判据：hooks/README.md 补上确证的配置片段
-- [ ] （可选）把 verify-guard 从纯 tripwire 增强为"带精确数字的定性结论无置信度标记则软提醒"，评估误报率
-- [ ] **修 verify-guard 引用语境误报**（evals/cases/08，已在 hook_eval 里红着）
-  - 完成判据：hook_eval 全绿，且拦截率 4/4 不掉
-- [x] 搭最小 eval（evals/：hook_eval.py 自动化 + 8 张真实失败案例卡 + 判分口径）——基线：拦截率 100%，误报率 14%
+- [ ] **Codex hook 格式确认**（下个 session 第一动作）：用户跑一次 Codex 后读 `~/.codex/verify-guard-stdin-capture.jsonl`,确认 stdin 格式（transcript_path/cwd/stop_hook_active 字段）;一致→删捕获器,不一致→写兼容层
+- [ ] **verify-guard 引用语境误报修复**（第 3 例已现,cases/08）：条件式句式豁免;判据=hook_eval 拦截 11/11 不掉且新增引用用例转绿
+- [ ] **L4 两周三指标回填**（metrics-log,基线 2026-07-26 起）+ KB 抽检第一轮（业务侧 /cross-check ≥3 条,错误率进 CHANGELOG）
+- [ ] [核实] Trae Commands 面板 / CoCo hook 机制
+- [ ] [挂起带判据] Mem0 试点（触发条件见 research-memory-systems-2026.md）
 
-## 用户侧动作（非代码，提醒下个 session 转告）
-- [ ] 用户重跑 `bash setup.sh` 让最新规则/skill 传到 ~/.ai-coding-pack（全局 + Trae）
-- [ ] 用户新开 session 让 .claude/settings.json 的 verify-guard hook 生效，`/hooks` 确认
+## 用户侧动作
+- [ ] Codex 下次启动:允许新 hook 信任确认（两个 guard + 捕获器）
+- [ ] 高价值任务派活姿势:/task-brief（判据入 TASK_GOAL.md）;Claude Code 另加 /goal 双保险
